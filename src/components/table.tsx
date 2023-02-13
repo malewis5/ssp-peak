@@ -20,13 +20,9 @@ export const fetchData = async (
   }
 };
 
-export const fetchDataCount = async (
-  route: string
-): Promise<any | undefined> => {
+export const fetchDataCount = async (data: any): Promise<any | undefined> => {
   try {
-    const response = await axios.get(`https://swapi.dev/api/${route}?page=1`);
-    console.log(response.data.count);
-    return response.data.count;
+    return data.count;
   } catch (error) {
     console.log(error);
   }
@@ -35,32 +31,12 @@ export const fetchDataCount = async (
 export const Table = (props: any) => {
   const router = useRouter();
 
-  const {
-    isLoading: isDataLoading,
-    data,
-    isFetching: isDataFetching,
-  } = useQuery(
+  const { isLoading, data, isFetching } = useQuery(
     ['data', props.page, props.route],
     () =>
       fetchData(props.page, props.route).then((res) => {
         return res;
       }),
-    {
-      cacheTime: 60 * 1000 * 15,
-      staleTime: 60 * 100 * 10,
-      keepPreviousData: true,
-    }
-  );
-
-  const {
-    isLoading: isCountLoading,
-    data: countData,
-    isFetching: isCountFetching,
-  } = useQuery(
-    ['count', props.route],
-    () => {
-      return fetchDataCount(props.route);
-    },
     {
       cacheTime: 60 * 1000 * 15,
       staleTime: 60 * 100 * 10,
@@ -80,16 +56,13 @@ export const Table = (props: any) => {
     });
   };
 
-  const isLoading = isCountLoading || isDataLoading;
-  const isFetching = isCountFetching || isDataFetching;
-
   return (
     <>
       <h1 style={{ textTransform: 'capitalize' }}>Star Wars {props.route}</h1>
       <DataGrid
         style={{ minHeight: '454px' }}
         getRowId={() => uuidv4()}
-        rowCount={countData}
+        rowCount={isLoading ? 10 : data?.count}
         paginationMode="server"
         pageSize={10}
         page={props.page}
