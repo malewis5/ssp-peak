@@ -6,12 +6,13 @@ import { columns } from './columns';
 import { v4 as uuidv4 } from 'uuid';
 
 export const fetchData = async (
-  page: number
+  page: number,
+  route: string
 ): Promise<GridValidRowModel | undefined> => {
   page += 1; // SWAPI starts at 1 not 0.
   try {
     const response = await axios.get(
-      `https://swapi.dev/api/people?page=${page}`,
+      `https://swapi.dev/api/${route}?page=${page}`,
       {}
     );
     return response.data;
@@ -20,12 +21,17 @@ export const fetchData = async (
   }
 };
 
-export const Table = () => {
+export const Table = (props: { route: string }) => {
   const [page, setPage] = useState(0);
+  const [rowCount, setRowCount] = useState(100);
 
   const { isLoading, data, isFetching } = useQuery(
-    ['data', page],
-    () => fetchData(page),
+    ['data', page, props.route],
+    () =>
+      fetchData(page, props.route).then((res) => {
+        setRowCount(res?.count);
+        return res;
+      }),
     {
       keepPreviousData: true,
       staleTime: 10 * (60 * 1000), // 10 mins
@@ -33,28 +39,42 @@ export const Table = () => {
     }
   );
 
+  const createColumns = (data: any | undefined) => {
+    const columnNames = Object.keys(data.results[0]);
+    return columnNames.map((col) => {
+      return {
+        field: col,
+        headerName: col,
+        flex: 1,
+      };
+    });
+  };
+
   return (
-    <DataGrid
-      getRowId={() => uuidv4()}
-      rowCount={82}
-      paginationMode="server"
-      pageSize={10}
-      rowsPerPageOptions={[10]}
-      onPageChange={(newPage) => {
-        setPage(newPage);
-        fetchData(newPage);
-      }}
-      componentsProps={{
-        toolbar: {
-          showQuickFilter: true,
-          quickFilterProps: { debounceMs: 500 },
-        },
-      }}
-      density="compact"
-      loading={isLoading || isFetching}
-      rows={isLoading ? [] : data?.results}
-      columns={columns}
-      autoHeight
-    />
+    <>
+      <h1 style={{ textTransform: 'capitalize' }}>Star Wars {props.route}</h1>
+      <DataGrid
+        getRowId={() => uuidv4()}
+        rowCount={rowCount}
+        paginationMode="server"
+        pageSize={10}
+        rowsPerPageOptions={[10]}
+        onPageChange={(newPage) => {
+          setPage(newPage);
+          fetchData(newPage, props.route);
+        }}
+        componentsProps={{
+          toolbar: {
+            showQuickFilter: true,
+            quickFilterProps: { debounceMs: 500 },
+          },
+        }}
+        density="compact"
+        loading={isLoading || isFetching}
+        rows={isLoading ? [] : data?.results}
+        columns={isLoading ? [] : createColumns(data)}
+        autoHeight
+      />
+    </>
   );
 };

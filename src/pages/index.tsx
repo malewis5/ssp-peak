@@ -3,11 +3,23 @@ import styles from '@/styles/Home.module.css';
 import { Table } from '@/components/table';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { useState } from 'react';
+import { Button } from '@mui/material';
 
 // Create a client
 const queryClient = new QueryClient();
 
+const routes = [
+  'people',
+  'films',
+  'starships',
+  'vehicles',
+  'species',
+  'planets',
+];
+
 export default function Home() {
+  const [route, setRoute] = useState('people');
   return (
     <>
       <Head>
@@ -18,8 +30,16 @@ export default function Home() {
       </Head>
       <QueryClientProvider client={queryClient}>
         <main className={styles.main}>
-          <h1>Star Wars Characters</h1>
-          <Table />
+          <Table route={route} />
+          <ul>
+            {routes.map((item: string) => {
+              return (
+                <li onClick={() => setRoute(item)} key={item}>
+                  <Button>{item}</Button>
+                </li>
+              );
+            })}
+          </ul>
         </main>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
