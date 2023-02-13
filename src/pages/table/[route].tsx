@@ -45,6 +45,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { route, page } = context.query;
 
   return {
-    props: { route: route, page: page ?? 0 }, // will be passed to the page component as props
+    props: { route: route, page: page ?? 0 },
   };
 };

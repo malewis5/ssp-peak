@@ -1,7 +1,6 @@
 import { DataGrid, GridValidRowModel } from '@mui/x-data-grid';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -34,7 +33,6 @@ export const fetchDataCount = async (
 };
 
 export const Table = (props: any) => {
-  const [rowCount, setRowCount] = useState(100);
   const router = useRouter();
 
   const {
@@ -43,7 +41,6 @@ export const Table = (props: any) => {
     isFetching: isDataFetching,
   } = useQuery(['data', props.page, props.route], () =>
     fetchData(props.page, props.route).then((res) => {
-      setRowCount(res?.count);
       return res;
     })
   );
