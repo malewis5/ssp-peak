@@ -62,21 +62,19 @@ export const Table = (props: any) => {
       <DataGrid
         style={{ minHeight: '454px' }}
         getRowId={() => uuidv4()}
-        rowCount={isLoading ? 10 : data?.count}
+        rowCount={data?.count}
         paginationMode="server"
         pageSize={10}
-        page={props.page}
-        rowsPerPageOptions={[10]}
+        page={parseInt(props.page)}
         onPageChange={(newPage) => {
-          props.setPage(newPage);
           router.replace({
             query: { ...router.query, page: newPage },
           });
         }}
         density="compact"
         loading={isLoading || isFetching}
-        rows={isLoading ? [] : data?.results}
-        columns={isLoading ? [] : createColumns(data)}
+        rows={data?.results ?? []}
+        columns={createColumns(data)}
         autoHeight
       />
     </>

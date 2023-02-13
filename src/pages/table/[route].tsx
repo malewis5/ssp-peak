@@ -15,16 +15,10 @@ const routes = [
 ];
 
 export default function Home(props: any) {
-  const [page, setPage] = useState(props.page);
-
-  useEffect(() => {
-    setPage(props.page);
-  }, [props.page]);
-
   return (
     <>
       <main className={styles.main}>
-        <Table route={props.route} page={page} setPage={setPage} />
+        <Table route={props.route} page={props.page} />
         <ul>
           {routes.map((item: string) => {
             return (
@@ -43,8 +37,7 @@ export default function Home(props: any) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { route, page } = context.query;
-
   return {
-    props: { route: route, page: page ?? 0 },
+    props: { route: route, page: page },
   };
 };
