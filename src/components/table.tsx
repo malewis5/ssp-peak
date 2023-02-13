@@ -51,7 +51,8 @@ export const Table = (props: any) => {
       return {
         field: col,
         headerName: col,
-        flex: 1,
+        flex: 0,
+        sortable: false,
       };
     });
   };
@@ -60,6 +61,7 @@ export const Table = (props: any) => {
     <>
       <h1 style={{ textTransform: 'capitalize' }}>Star Wars {props.route}</h1>
       <DataGrid
+        disableColumnMenu
         style={{ minHeight: '454px' }}
         getRowId={() => uuidv4()}
         rowCount={data?.count}
