@@ -63,12 +63,6 @@ export const Table = (props: { route: string }) => {
           setPage(newPage);
           fetchData(newPage, props.route);
         }}
-        componentsProps={{
-          toolbar: {
-            showQuickFilter: true,
-            quickFilterProps: { debounceMs: 500 },
-          },
-        }}
         density="compact"
         loading={isLoading || isFetching}
         rows={isLoading ? [] : data?.results}
