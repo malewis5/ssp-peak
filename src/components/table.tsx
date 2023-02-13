@@ -2,7 +2,6 @@ import { DataGrid, GridValidRowModel } from '@mui/x-data-grid';
 import axios from 'axios';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { columns } from './columns';
 import { v4 as uuidv4 } from 'uuid';
 
 export const fetchData = async (
@@ -31,12 +30,7 @@ export const Table = (props: { route: string }) => {
       fetchData(page, props.route).then((res) => {
         setRowCount(res?.count);
         return res;
-      }),
-    {
-      keepPreviousData: true,
-      staleTime: 10 * (60 * 1000), // 10 mins
-      cacheTime: 15 * (60 * 1000), // 15 mins
-    }
+      })
   );
 
   const createColumns = (data: any | undefined) => {
