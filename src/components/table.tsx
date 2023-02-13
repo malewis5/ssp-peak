@@ -39,19 +39,34 @@ export const Table = (props: any) => {
     isLoading: isDataLoading,
     data,
     isFetching: isDataFetching,
-  } = useQuery(['data', props.page, props.route], () =>
-    fetchData(props.page, props.route).then((res) => {
-      return res;
-    })
+  } = useQuery(
+    ['data', props.page, props.route],
+    () =>
+      fetchData(props.page, props.route).then((res) => {
+        return res;
+      }),
+    {
+      cacheTime: 60 * 1000 * 15,
+      staleTime: 60 * 100 * 10,
+      keepPreviousData: true,
+    }
   );
 
   const {
     isLoading: isCountLoading,
     data: countData,
     isFetching: isCountFetching,
-  } = useQuery(['count', props.route], () => {
-    return fetchDataCount(props.route);
-  });
+  } = useQuery(
+    ['count', props.route],
+    () => {
+      return fetchDataCount(props.route);
+    },
+    {
+      cacheTime: 60 * 1000 * 15,
+      staleTime: 60 * 100 * 10,
+      keepPreviousData: true,
+    }
+  );
 
   const createColumns = (data: any | undefined) => {
     if (!data) return [];
